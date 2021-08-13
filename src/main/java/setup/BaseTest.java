@@ -1,67 +1,111 @@
 package setup;
 
+import static java.lang.String.format;
+
 import io.appium.java_client.AppiumDriver;
-import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.annotations.*;
-import pageObjects.PageObject;
 
 public class BaseTest implements IDriver {
+    private static AppiumDriver driver;
+    private static String platformName;
 
-    private static AppiumDriver appiumDriver; // singleton
-    private static IPageObject po;
+    protected Logger logger = LogManager.getLogger(getClass());
 
     @Override
     public AppiumDriver getDriver() {
-        return appiumDriver;
+        return driver;
     }
 
-    public IPageObject getPo() {
-        return po;
+    public String getPlatformName() {
+        return platformName;
     }
 
-    @Parameters(value = {"platformName", "appType", "deviceName", "browserName", "app"})
+    @Parameters(value = {"appType", "platformName", "udid", "deviceName", "browserName",
+            "app", "appPackage", "appActivity", "bundleId"})
     @BeforeSuite(alwaysRun = true)
-    public void setUp(String platformName, String appType, String deviceName, @Optional("") String browserName,
-                      @Optional("") String app) throws Exception {
-        System.out.println("Before: app type - " + appType);
-        setAppiumDriver(platformName, deviceName, browserName, app);
-        setPageObject(appType, appiumDriver);
+    public void setUp(String appType, String platformName,
+            @Optional("") String udid,
+            @Optional("") String deviceName,
+            @Optional("") String browserName,
+            @Optional("") String app,
+            @Optional("") String appPackage,
+            @Optional("") String appActivity,
+            @Optional("") String bundleId
+    ) {
+        BaseTest.platformName = platformName;
+        logger.info("Before: app type - " + appType);
+        setAppiumDriver(
+                appType,
+                platformName,
+                udid,
+                deviceName,
+                browserName,
+                app,
+                appPackage,
+                appActivity,
+                bundleId
+        );
     }
 
-    @AfterSuite(alwaysRun = true)
+    @AfterSuite(alwaysRun = true, groups = {"native"})
     public void tearDown() {
-        appiumDriver.closeApp();
+        driver.closeApp();
     }
 
-    private void setAppiumDriver(String platformName, String deviceName, String browserName, String app) {
+    private void setAppiumDriver(
+            String appType,
+            String platformName,
+            String udid,
+            String deviceName,
+            String browserName,
+            String app,
+            String appPackage,
+            String appActivity,
+            String bundleId
+    ) {
         DesiredCapabilities capabilities = new DesiredCapabilities();
-        //mandatory Android capabilities
-        capabilities.setCapability("platformName", platformName);
-        capabilities.setCapability("deviceName", deviceName);
 
-        if (app.contains(".apk")) {
-            capabilities.setCapability("app", (new File(app)).getAbsolutePath());
+        capabilities.setCapability("platformName", platformName);
+
+        String customUdid = System.getProperty("udid");
+        if (customUdid != null) {
+            capabilities.setCapability("udid", customUdid);
         } else {
+            capabilities.setCapability("deviceName", deviceName);
+            capabilities.setCapability("udid", udid);
+        }
+
+        if (appType.equals("web")) {
             capabilities.setCapability("browserName", browserName);
-            capabilities.setCapability("chromedriverDisableBuildCheck", "true");
+            if (browserName.contains("chrome")) {
+                capabilities.setCapability("chromedriverDisableBuildCheck", "true");
+            }
+        } else {
+            capabilities.setCapability("app", app);
+            capabilities.setCapability("appPackage", appPackage);
+            capabilities.setCapability("appActivity", appActivity);
+            capabilities.setCapability("bundleId", bundleId);
         }
 
         try {
-            appiumDriver = new AppiumDriver<>(new URL(System.getProperty("ts.appium")), capabilities);
-        } catch (MalformedURLException e) {
+            String projectName = System.getProperty("project.name");
+            String appiumHub = System.getProperty("appium.hub");
+            String token = URLEncoder.encode(System.getProperty("api.key"), StandardCharsets.UTF_8.name());
+            driver = new AppiumDriver<>(
+                    new URL(format("https://%s:%s@%s/wd/hub", projectName, token, appiumHub)), capabilities);
+        } catch (MalformedURLException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-
         // Timeouts tuning
-        appiumDriver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
-
-    }
-
-    private void setPageObject(String appType, AppiumDriver appiumDriver) throws Exception {
-        po = new PageObject(appType, appiumDriver);
+        driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
     }
 }

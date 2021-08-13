@@ -1,25 +1,24 @@
 package pageObjects.nativePageObjects;
 
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.MobileElement;
+import io.appium.java_client.pagefactory.AndroidFindBy;
+import io.appium.java_client.pagefactory.iOSXCUITFindBy;
 import lombok.Getter;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import pageObjects.PageObject;
 
 @Getter
 public class BudgetActivityPage extends PageObject {
+    @AndroidFindBy(xpath = "//android.view.ViewGroup/android.widget.FrameLayout[2]//android.widget.TextView")
+    @iOSXCUITFindBy(xpath = "//XCUIElementTypeStaticText[@name='Budget']")
+    private MobileElement pageTitleLabel;
 
-    @FindBy(xpath = "//android.view.ViewGroup/android.widget.FrameLayout[2]//android.widget.TextView")
-    WebElement pageTitleLabel;
+    private BudgetActivityPage(AppiumDriver driver) {
+        super(driver);
+    }
 
-    @FindBy(id = "add_new_expense")
-    WebElement addExpenseBtn;
-
-    @FindBy(id = "action_bar")
-    WebElement actionBar;
-
-    public BudgetActivityPage(AppiumDriver appiumDriver) {
-        super(appiumDriver);
+    public static BudgetActivityPage using(AppiumDriver driver) {
+        return new BudgetActivityPage(driver);
     }
 
     public String getTitle() {

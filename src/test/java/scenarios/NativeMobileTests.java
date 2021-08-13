@@ -1,40 +1,58 @@
 package scenarios;
 
+import data.User;
+import org.openqa.selenium.NoSuchElementException;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import pageObjects.nativePageObjects.BudgetActivityPage;
 import pageObjects.nativePageObjects.LoginPage;
 import pageObjects.nativePageObjects.RegistrationPage;
-import data.User;
 import setup.BaseTest;
 
 public class NativeMobileTests extends BaseTest {
 
-    @Test(groups = {"native"}, description = "This simple test just click on the Sign In button")
-    public void simpleNativeTest() throws IllegalAccessException, NoSuchFieldException, InstantiationException {
-        getPo().getWelement("signInBtn").click();
-        System.out.println("Simplest Android native test done");
+    @BeforeMethod(alwaysRun = true, groups = {"native"})
+    public void reset() {
+        getDriver().resetApp();
+    }
+
+    @Test(groups = {"native"}, description = "This simple test just click on the Sign In button.")
+    public void simpleNativeTest() {
+        logger.info("simpleNativeTest started");
+        logger.info("Click on Sign In button");
+        LoginPage.using(getDriver())
+                .signIn();
+        logger.info("simpleNativeTest done");
     }
 
     @Test(groups = {"native"}, description = "This test checks that user can register a new account with valid data.")
-    public void simpleRegistrationTest() throws IllegalAccessException, NoSuchFieldException, InstantiationException,
-            InterruptedException {
-        // go to registration page
-        LoginPage loginPage = new LoginPage(getDriver());
-        loginPage.getRegisterBtn().click();
-        // fill in the registration form
-        RegistrationPage registrationPage = new RegistrationPage(getDriver());
-        registrationPage.registerAs(User.DEFAULT_USER);
-        // bug was found
-//        assert registrationPage.getUserAgreementCheckbox().isSelected()
-//                : "User agreement checkbox should be selected.";
-        // confirm registration
-        registrationPage.getRegisterAccountBtn().click();
-        // login as default user
-        loginPage.loginAs(User.DEFAULT_USER);
-        // check that Budget Activity page is opened
-        BudgetActivityPage budgetActivityPage = new BudgetActivityPage(getDriver());
-        assert budgetActivityPage.getTitle().equalsIgnoreCase("BudgetActivity")
-                : "Budget Activity page should be opened";
+    public void simpleRegistrationTest() {
+        logger.info("simpleRegistrationTest started");
+        logger.info("Go to registration page");
+        LoginPage.using(getDriver())
+                .registerNewAccount();
+        User testUser = User.getRandomUser();
+        logger.info("Fill in the form");
+        RegistrationPage.using(getDriver())
+                .setEmail(testUser.getEmail())
+                .setUsername(testUser.getUsername())
+                .setPassword(testUser.getPassword())
+                .confirmPassword(testUser.getPassword())
+                .confirmAgreement(getPlatformName())
+                .register();
+        try {
+            logger.info("Log in as default user");
+            LoginPage.using(getDriver())
+                    .setEmail(testUser.getEmail())
+                    .setPassword(testUser.getPassword())
+                    .signIn();
+        } catch (Exception e) {
+            throw new NoSuchElementException("This is not Login page.");
+        }
+        logger.info("Check that Budget Activity page is opened");
+        assert BudgetActivityPage.using(getDriver())
+                .getTitle()
+                .contains("Budget") : "Budget Activity page should be opened";
+        logger.info("simpleRegistrationTest done");
     }
-
 }

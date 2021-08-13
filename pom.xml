@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.epam.mtat</groupId>
@@ -31,6 +31,16 @@
             <version>2.2</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>4.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+        </dependency>
 
     </dependencies>
 
@@ -45,7 +55,8 @@
                         <suiteXmlFile>${suite.file}</suiteXmlFile>
                     </suiteXmlFiles>
                     <systemPropertyVariables>
-                        <ts.appium>http://localhost:4723/wd/hub</ts.appium>
+                        <project.name>EPM-TSTF</project.name>
+                        <appium.hub>mobilecloud.epam.com</appium.hub>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
@@ -80,7 +91,46 @@
                 <suite.file>./src/test/resources/webTNG.xml</suite.file>
             </properties>
         </profile>
-    </profiles>
 
+        <profile>
+            <id>cloudWeb</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <suite.file>./src/test/resources/cloudWebTNG.xml</suite.file>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>iosCloudWeb</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <suite.file>./src/test/resources/iosCloudWebTNG.xml</suite.file>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>cloudNative</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <suite.file>./src/test/resources/cloudNativeTNG.xml</suite.file>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>iosCloudNative</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <suite.file>./src/test/resources/iosCloudNativeTNG.xml</suite.file>
+            </properties>
+        </profile>
+    </profiles>
 
 </project>
