@@ -44,21 +44,25 @@ public class RegistrationPage extends PageObject {
     }
 
     public RegistrationPage setEmail(String email) {
+        emailRegField.click();
         emailRegField.sendKeys(email);
         return this;
     }
 
     public RegistrationPage setUsername(String username) {
+        usernameRegField.click();
         usernameRegField.sendKeys(username);
         return this;
     }
 
     public RegistrationPage setPassword(String pwd) {
+        passwordRegField.click();
         passwordRegField.sendKeys(pwd);
         return this;
     }
 
     public RegistrationPage confirmPassword(String pwd) {
+        passwordConfRegField.click();
         passwordConfRegField.sendKeys(pwd);
         return this;
     }

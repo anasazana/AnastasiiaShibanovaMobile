@@ -2,7 +2,7 @@
 <suite name="Cloud ios native mobile testing Suite">
     <parameter name="appType" value="native"/>
     <parameter name="platformName" value="iOS"/>
-    <parameter name="udid" value="00008030-001115E40EE2802E"/>
+    <parameter name="udid" value="00008030-0000798A0EF2802E"/>
     <parameter name="bundleId" value="com.epam.EPAMTestApp.ii"/>
     <test name="Cloud ios native tests">
         <groups>

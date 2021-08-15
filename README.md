@@ -8,8 +8,10 @@ Cloud mobile test profiles:
 -PcloudWeb
 -PcloudNative
 
-*For cloud mobile native tests EPAMTestApp should be installed on the device*
-
-To run cloud mobile tests use command 'mvn clean test -P(cloud_test_profile) -Dapi.key=(your_api_key) -Dudid=(device_udid)'
+Before running cloud mobile tests add your personal api-key to *testData.properties* file.
 
 *!Please, use long version of api-key*
+
+*For cloud mobile native tests EPAMTestApp should be installed on the device*
+
+To run cloud mobile tests use command 'mvn clean test -P(cloud_test_profile) -Dudid=(device_udid)'

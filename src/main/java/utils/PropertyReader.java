@@ -4,9 +4,14 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public final class PropertyReader {
-    private static volatile Properties properties;
+    private final static Properties properties = initProperties();
 
-    private static void initProperties() {
+    public static String getProperty(String key) {
+        return properties.getProperty(key);
+    }
+
+    private static Properties initProperties() {
+        Properties properties;
         String sourceFile = "testData.properties";
         try {
             InputStream inputStream = ClassLoader.getSystemResourceAsStream(sourceFile);
@@ -15,20 +20,6 @@ public final class PropertyReader {
         } catch (Exception e) {
             throw new RuntimeException("Can not read properties file: " + sourceFile);
         }
-    }
-
-    private static Properties getProperties() {
-        if (properties == null) {
-            synchronized (PropertyReader.class) {
-                if (properties == null) {
-                    initProperties();
-                }
-            }
-        }
         return properties;
-    }
-
-    public static String getProperty(String key) {
-        return getProperties().getProperty(key);
     }
 }

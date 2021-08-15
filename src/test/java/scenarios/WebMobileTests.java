@@ -33,9 +33,9 @@ public class WebMobileTests extends BaseTest {
         logger.info("simpleGoogleSearchTest started. Keyword: '" + keyword + "'");
         logger.info("Go to Google homepage and search for '" + keyword + "'");
         List<String> searchResults = GoogleSearchPage.using(getDriver())
-                        .launch()
-                        .searchFor(keyword, getPlatformName())
-                        .getSearchResults();
+                .launch()
+                .searchFor(keyword, getPlatformName())
+                .getSearchResults();
         logger.info("Analyse search results");
         List<String> properSearchResults = searchResults
                         .stream()

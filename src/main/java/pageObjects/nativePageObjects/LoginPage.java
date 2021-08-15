@@ -49,7 +49,7 @@ public class LoginPage extends PageObject {
         signInBtn.click();
     }
 
-    public void registerNewAccount() {
+    public void clickOnRegisterBtn() {
         registerBtn.click();
     }
 }

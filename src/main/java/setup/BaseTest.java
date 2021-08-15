@@ -13,6 +13,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.annotations.*;
+import utils.PropertyReader;
 
 public class BaseTest implements IDriver {
     private static AppiumDriver driver;
@@ -99,7 +100,7 @@ public class BaseTest implements IDriver {
         try {
             String projectName = System.getProperty("project.name");
             String appiumHub = System.getProperty("appium.hub");
-            String token = URLEncoder.encode(System.getProperty("api.key"), StandardCharsets.UTF_8.name());
+            String token = URLEncoder.encode(PropertyReader.getProperty("api.key"), StandardCharsets.UTF_8.name());
             driver = new AppiumDriver<>(
                     new URL(format("https://%s:%s@%s/wd/hub", projectName, token, appiumHub)), capabilities);
         } catch (MalformedURLException | UnsupportedEncodingException e) {

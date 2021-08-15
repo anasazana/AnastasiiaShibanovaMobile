@@ -2,7 +2,7 @@
 <suite name="Cloud ios web mobile testing Suite">
     <parameter name="appType" value="web"/>
     <parameter name="platformName" value="iOS"/>
-    <parameter name="udid" value="00008030-001115E40EE2802E"/>
+    <parameter name="udid" value="00008030-0000798A0EF2802E"/>
     <parameter name="browserName" value="safari"/>
     <test name="Cloud ios web tests">
         <groups>

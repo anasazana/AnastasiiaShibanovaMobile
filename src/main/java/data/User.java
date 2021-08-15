@@ -1,7 +1,6 @@
 package data;
 
 import java.util.Random;
-import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 import utils.PropertyReader;
@@ -11,11 +10,11 @@ import utils.PropertyReader;
 public class User {
     private static User DEFAULT_USER;
 
-    private String email;
-    private String username;
-    private String password;
+    private final String email;
+    private final String username;
+    private final String password;
 
-    public User(String email, String username, String password) {
+    private User(String email, String username, String password) {
         this.email = email;
         this.username = username;
         this.password = password;
