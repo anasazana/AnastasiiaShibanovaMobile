@@ -1,10 +1,10 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
-<suite name="Web mobile testing Suite">
-    <parameter name="deviceName" value="emulator-5554"/>
+<suite name="Cloud ios web mobile testing Suite">
     <parameter name="appType" value="web"/>
-    <parameter name="platformName" value="Android"/>
-    <parameter name="browserName" value="Chrome"/>
-    <test name="Web tests">
+    <parameter name="platformName" value="iOS"/>
+    <parameter name="udid" value="00008030-0000798A0EF2802E"/>
+    <parameter name="browserName" value="safari"/>
+    <test name="Cloud ios web tests">
         <groups>
             <run>
                 <include name="web"/>

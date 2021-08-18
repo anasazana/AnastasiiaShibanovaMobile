@@ -1,45 +1,89 @@
 package pageObjects.nativePageObjects;
 
-import data.User;
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.MobileElement;
+import io.appium.java_client.pagefactory.AndroidFindBy;
+import io.appium.java_client.pagefactory.iOSXCUITFindBy;
 import lombok.Getter;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import pageObjects.PageObject;
 
 @Getter
 public class RegistrationPage extends PageObject {
+    @AndroidFindBy(xpath = "//TextInputLayout[@text='Email']//android.widget.EditText")
+    @iOSXCUITFindBy(xpath = "//XCUIElementTypeStaticText[@name='Email']/following-sibling::XCUIElementTypeTextField")
+    private MobileElement emailRegField;
 
-    @FindBy(id = "registration_email")
-    WebElement emailRegField;
+    @AndroidFindBy(xpath = "//TextInputLayout[@text='Username']//android.widget.EditText")
+    @iOSXCUITFindBy(xpath = "//XCUIElementTypeStaticText[@name='Username']/following-sibling::XCUIElementTypeTextField")
+    private MobileElement usernameRegField;
 
-    @FindBy(id = "registration_username")
-    WebElement usernameRegField;
+    @AndroidFindBy(xpath = "//TextInputLayout[@text='Password']//android.widget.EditText")
+    @iOSXCUITFindBy(xpath = "//XCUIElementTypeStaticText[@name='Password']"
+            + "/following-sibling::XCUIElementTypeSecureTextField")
+    private MobileElement passwordRegField;
 
-    @FindBy(id = "registration_password")
-    WebElement passwordRegField;
+    @AndroidFindBy(xpath = "//TextInputLayout[@text='Confirm Password']//android.widget.EditText")
+    @iOSXCUITFindBy(xpath = "//XCUIElementTypeStaticText[@name='Confirm password']"
+            + "/following-sibling::XCUIElementTypeSecureTextField")
+    private MobileElement passwordConfRegField;
 
-    @FindBy(id = "registration_confirm_password")
-    WebElement passwordConfRegField;
+    @AndroidFindBy(xpath = "//android.widget.CheckedTextView")
+    @iOSXCUITFindBy(xpath = "//XCUIElementTypeSwitch")
+    private MobileElement userAgreementBtn;
 
-    @FindBy(xpath = "//android.view.ViewGroup/android.widget.FrameLayout[2]//android.widget.CheckedTextView")
-    WebElement userAgreementCheckbox;
+    @AndroidFindBy(xpath = "//android.widget.Button[@text='REGISTER NEW ACCOUNT']")
+    @iOSXCUITFindBy(xpath = "//XCUIElementTypeStaticText[@name='Register new account']/..")
+    private MobileElement registerAccountBtn;
 
-    @FindBy(id = "register_new_account_button")
-    WebElement registerAccountBtn;
-
-    @FindBy(id = "registration_cancel_button")
-    WebElement cancelBtn;
-
-    public RegistrationPage(AppiumDriver appiumDriver) {
-        super(appiumDriver);
+    private RegistrationPage(AppiumDriver driver) {
+        super(driver);
     }
 
-    public void registerAs(User user) {
-        emailRegField.sendKeys(user.getEmail());
-        usernameRegField.sendKeys(user.getUsername());
-        passwordRegField.sendKeys(user.getPassword());
-        passwordConfRegField.sendKeys(user.getPassword());
-        userAgreementCheckbox.click();
+    public static RegistrationPage using(AppiumDriver driver) {
+        return new RegistrationPage(driver);
+    }
+
+    public RegistrationPage setEmail(String email) {
+        emailRegField.click();
+        emailRegField.sendKeys(email);
+        return this;
+    }
+
+    public RegistrationPage setUsername(String username) {
+        usernameRegField.click();
+        usernameRegField.sendKeys(username);
+        return this;
+    }
+
+    public RegistrationPage setPassword(String pwd) {
+        passwordRegField.click();
+        passwordRegField.sendKeys(pwd);
+        return this;
+    }
+
+    public RegistrationPage confirmPassword(String pwd) {
+        passwordConfRegField.click();
+        passwordConfRegField.sendKeys(pwd);
+        return this;
+    }
+
+    public RegistrationPage confirmAgreement(String platform) {
+        userAgreementBtn.click();
+        if (platform.equals("iOS")) {
+            registerAccountBtn.click();
+        }
+        return checkThatAgreementIsConfirmed(platform);
+    }
+
+    private RegistrationPage checkThatAgreementIsConfirmed(String platform) {
+        assert (platform.equals("iOS")
+                ? userAgreementBtn.getAttribute("value").equals("1")
+                : userAgreementBtn.isSelected())
+                : "User agreement should be confirmed.";
+        return this;
+    }
+
+    public void register() {
+        registerAccountBtn.click();
     }
 }
